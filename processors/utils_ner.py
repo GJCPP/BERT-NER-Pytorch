@@ -31,7 +31,7 @@ class DataProcessor(object):
     @classmethod
     def _read_text(self,input_file):
         lines = []
-        with open(input_file,'r') as f:
+        with open(input_file, 'r', encoding='utf-8') as f:
             words = []
             labels = []
             for line in f:
@@ -118,6 +118,7 @@ def get_entity_bios(seq,id2label):
                 chunks.append(chunk)
             chunk = [-1, -1, -1]
     return chunks
+
 
 def get_entity_bio(seq,id2label):
     """Gets entities from sequence.

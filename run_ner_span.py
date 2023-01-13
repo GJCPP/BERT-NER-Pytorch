@@ -325,6 +325,7 @@ def load_and_cache_examples(args, task, tokenizer, data_type='train'):
         list(filter(None, args.model_name_or_path.split('/'))).pop(),
         str(args.train_max_seq_length if data_type == 'train' else args.eval_max_seq_length),
         str(task)))
+
     if os.path.exists(cached_features_file) and not args.overwrite_cache:
         logger.info("Loading features from cached file %s", cached_features_file)
         features = torch.load(cached_features_file)
@@ -377,7 +378,7 @@ def main():
     if not os.path.exists(args.output_dir):
         os.mkdir(args.output_dir)
     time_ = time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
-    init_logger(log_file=args.output_dir + f'/{args.model_type}-{args.task_name}-{time_}.log')
+    init_logger(log_file=args.output_dir + f'/{args.model_type}-{args.task_name}-{time_}.log'.replace(':', '-'))
     if os.path.exists(args.output_dir) and os.listdir(
             args.output_dir) and args.do_train and not args.overwrite_output_dir:
         raise ValueError(

@@ -1,10 +1,12 @@
 """ Named entity recognition fine-tuning: utilities to work with CoNLL-2003 task. """
+# coding=utf-8
 import torch
 import logging
 import os
 import copy
 import json
 from .utils_ner import DataProcessor,get_entities
+
 logger = logging.getLogger(__name__)
 
 class InputExample(object):
@@ -198,8 +200,6 @@ class CnerProcessor(DataProcessor):
         """Creates examples for the training and dev sets."""
         examples = []
         for (i, line) in enumerate(lines):
-            if i == 0:
-                continue
             guid = "%s-%s" % (set_type, i)
             text_a = line['words']
             labels = []
@@ -244,9 +244,48 @@ class CluenerProcessor(DataProcessor):
             examples.append(InputExample(guid=guid, text_a=text_a, subject=subject))
         return examples
 
+
+class YiduProcessor(DataProcessor):
+    """Processor for the chinese ner data set."""
+
+    def get_train_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_text(os.path.join(data_dir, "train.char.bmes")), "train")
+
+    def get_dev_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_text(os.path.join(data_dir, "dev.char.bmes")), "dev")
+
+    def get_test_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_text(os.path.join(data_dir, "test.char.bmes")), "test")
+
+    def get_labels(self):
+        """See base class."""
+        return ["O", "POS", "DRAG", "PHOTO", 'LAB', 'SURGERY', 'CONC']
+
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training and dev sets."""
+        examples = []
+        for (i, line) in enumerate(lines):
+            guid = "%s-%s" % (set_type, i)
+            text_a = line['words']
+            labels = []
+            for x in line['labels']:
+                if 'M-' in x:
+                    labels.append(x.replace('M-', 'I-'))
+                elif 'E-' in x:
+                    labels.append(x.replace('E-', 'I-'))
+                else:
+                    labels.append(x)
+            subject = get_entities(labels, id2label=None, markup='bios')
+            examples.append(InputExample(guid=guid, text_a=text_a, subject=subject))
+        return examples
+
 ner_processors = {
-    "cner": CnerProcessor,
-    'cluener':CluenerProcessor
+    'cner': CnerProcessor,
+    'cluener': CluenerProcessor,
+    'yidu-s4k': YiduProcessor
 }
 
 
