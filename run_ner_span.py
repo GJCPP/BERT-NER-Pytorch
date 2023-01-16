@@ -370,8 +370,61 @@ def load_and_cache_examples(args, task, tokenizer, data_type='train'):
     return dataset
 
 
+def init_args():
+    class _arg:
+        def __init__(this):
+            pass
+    args = _arg()
+    args.task_name                      = 'yidu-s4k'
+    args.data_dir                       = 'C:/Users/GJC/Desktop/BERT-NER-Pytorch/datasets/yidu-s4k/'
+    args.model_type                     = 'bert'
+    args.model_name_or_path             = 'C:/Users/GJC/Desktop/BERT-NER-Pytorch/prev_trained_model/bert-base-chinese'
+    args.output_dir                     = 'C:/Users/GJC/Desktop/BERT-NER-Pytorch/outputs/yidu-s4k_output/'
+    args.markup                         = 'bios'
+    args.loss_type                      = 'ce'
+    args.config_name                    = ''
+    args.tokenizer_name                 = ''
+    args.cache_dir                      = ''
+    args.train_max_seq_length           = 128
+    args.eval_max_seq_length            = 512
+    args.do_train                       = False
+    args.do_eval                        = False
+    args.do_predict                     = True
+    args.evaluate_during_training       = False
+    args.do_lower_case                  = True
+    args.do_adv                         = False
+    args.adv_epsilon                    = 1.0
+    args.adv_name                       = 'word_embeddings'
+    args.per_gpu_train_batch_size       = 24
+    args.per_gpu_eval_batch_size        = 24
+    args.gradient_accumulation_steps    = 1
+    args.learning_rate                  = 2e-05
+    args.crf_learning_rate              = 5e-05
+    args.weight_decay                   = 0.01
+    args.adam_epsilon                   = 1e-08
+    args.max_grad_norm                  = 1.0
+    args.num_train_epochs               = 10.0
+    args.max_steps                      = -1
+    args.warmup_proportion              = 0.1
+    args.logging_steps                  = -1
+    args.save_steps                     = -1
+    args.eval_all_checkpoints           = False
+    args.predict_checkpoints            = 0
+    args.no_cuda                        = False
+    args.overwrite_output_dir           = True
+    args.overwrite_cache                = False
+    args.seed                           = 42
+    args.fp16                           = False
+    args.fp16_opt_level                 = 'O1'
+    args.local_rank                     = -1
+    args.server_ip                      = ''
+    args.server_port                    = ''
+    return args
+
+
 def main():
-    args = get_argparse().parse_args()
+    # args = get_argparse().parse_args()
+    args = init_args()
     if not os.path.exists(args.output_dir):
         os.mkdir(args.output_dir)
     args.output_dir = args.output_dir + '{}'.format(args.model_type)
